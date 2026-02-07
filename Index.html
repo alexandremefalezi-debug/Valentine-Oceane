@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Administration centrale - Portail citoyen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #64748b;
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --border: #e2e8f0;
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      box-shadow: var(--shadow);
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .logo-svg {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9rem;
+    }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    nav {
+      display: flex;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    .nav-tabs {
+      display: flex;
+      margin: 0;
+      list-style: none;
+    }
+    .nav-tab {
+      padding: 12px 24px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    .nav-tab.active {
+      border-bottom-color: var(--primary);
+      color: var(--primary);
+    }
+    .nav-tab:hover {
+      background: #f8fafc;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      gap: 24px;
+      padding: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    aside {
+      width: 280px;
+      flex-shrink: 0;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .aside-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+    .aside-item {
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+    }
+    .aside-item:hover {
+      background: #f8fafc;
+      border-color: var(--border);
+    }
+    .aside-item.active {
+      background: #dbeafe;
+      border-color: var(--primary);
+      font-weight: 500;
+    }
+    .content {
+      flex: 1;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+    .content-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .status-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .status-card {
+      background: #f8fafc;
+      padding: 16px 20px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      flex: 1;
+      min-width: 200px;
+    }
+    .status-number {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .status-label {
+      font-size: 0.85rem;
+      color: var(--secondary);
+      margin-top: 4px;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .table th {
+      background: #f8fafc;
+      padding: 14px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--secondary);
+      border-bottom: 2px solid var(--border);
+    }
+    .table td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .table tr:hover {
+      background: #f8fafc;
+    }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .badge.primary { background: #dbeafe; color: var(--primary); }
+    .badge.warning { background: #fef3c7; color: #d97706; }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg);
+    }
+    .hidden {
+      display: none;
+    }
+
+    /* MODE SURPRISE */
+    body.surprise {
+      background: radial-gradient(circle at top, #ffb6c1, #ff4b6e, #2b002b);
+      color: #ffffff;
+    }
+    body.surprise header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+    }
+    body.surprise .logo {
+      color: #ffdde1;
+    }
+    body.surprise .logo-svg {
+      filter: brightness(1.3);
+    }
+    body.surprise .content {
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+    body.surprise .content-title {
+      color: #ffffff;
+    }
+    body.surprise .status-card {
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    body.surprise .status-number {
+      color: #ffdde1;
+    }
+    body.surprise .status-label {
+      color: #f9fafb;
+    }
+    body.surprise .table {
+      color: #f9fafb;
+    }
+    body.surprise .table th {
+      background: rgba(0, 0, 0, 0.4);
+      color: #f9fafb;
+    }
+    body.surprise .table td {
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    body.surprise .badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+    .surprise-reveal {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .surprise-reveal h2 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      color: #ffdde1;
+    }
+    .surprise-reveal p {
+      font-size: 1.1rem;
+      margin-bottom: 28px;
+      color: #f9fafb;
+    }
+    .heart-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .heart-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+    }
+    .heart-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    .heart-btn.yes {
+      background: linear-gradient(135deg, #ff6b9d, #ff8fab);
+      border-color: transparent;
+      min-width: 120px;
+    }
+    .heart {
+      position: fixed;
+      font-size: 24px;
+      color: #ffdde1;
+      animation: heartFloat 4s ease-out forwards;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    @keyframes heartFloat {
+      0% { transform: translateY(0) scale(0.5); opacity: 1; }
+      100% { transform: translateY(-100vh) scale(1.2) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <header>
+      <div class="header-top">
+        <div class="logo">
+          <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="45" stroke="#2563eb" stroke-width="6"/>
+            <path d="M35 45 Q50 30 65 45 Q50 60 35 45" stroke="#2563eb" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="50" cy="50" r="12" fill="#2563eb"/>
+          </svg>
+          <span>Administration centrale</span>
+        </div>
+        <div class="user-info">
+          <span>Connecté en tant que</span>
+          <div class="avatar">O</div>
+        </div>
+      </div>
+      <nav>
+        <ul class="nav-tabs">
+          <li class="nav-tab active" data-tab="dashboard">Tableau de bord</li>
+          <li class="nav-tab" data-tab="notifications">Notifications</li>
+          <li class="nav-tab" data-tab="documents">Documents</li>
+          <li class="nav-tab" data-tab="profil">Profil</li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <aside>
+        <div class="aside-title">Actions rapides</div>
+        <div class="aside-item active" data-action="priority">
+          📋 Notification prioritaire
+          <div style="float:right;font-size:0.7rem;color:#ef4444;">Urgent</div>
+        </div>
+        <div class="aside-item" data-action="messages">
+          💬 Messages
+        </div>
+        <div class="aside-item" data-action="rapports">
+          📊 Rapports
+        </div>
+        <div class="aside-item" data-action="parametres">
+          ⚙️ Paramètres
+        </div>
+      </aside>
+
+      <div class="content">
+        <!-- TAB DASHBOARD -->
+        <div id="tab-dashboard" class="tab-content active">
+          <h1 class="content-title">Tableau de bord</h1>
+          <div class="status-bar">
+            <div class="status-card">
+              <div class="status-number">1</div>
+              <div class="status-label">Notifications prioritaires</div>
+            </div>
+            <div class="status-card">
+              <div class="status-number">3</div>
+              <div class="status-label">Messages en attente</div>
+            </div>
+            <div class="status-card">
+              <div class="status-number">✓ 12</div>
+              <div class="status-label">Actions complétées</div>
+            </div>
+          </div>
+
+          <h3 style="margin-bottom:12px;font-size:1.1rem;">Notifications récentes</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Sujet</th>
+                <th>Statut</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>07/02/2026 08:30</td>
+                <td>Message personnel prioritaire</td>
+                <td><span class="badge warning">En attente</span></td>
+                <td><button class="btn" onclick="revealSurprise()">Consulter</button></td>
+              </tr>
+              <tr>
+                <td>06/02/2026 22:15</td>
+                <td>Rapport mensuel</td>
+                <td><span class="badge primary">Lu</span></td>
+                <td><button class="btn" style="background:#6b7280;">Archiver</button></td>
+              </tr>
+              <tr>
+                <td>05/02/2026 14:22</td>
+                <td>Mise à jour système</td>
+                <td><span class="badge primary">Lu</span></td>
+                <td><button class="btn" style="background:#6b7280;">Archiver</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- AUTRES TABS (vides pour l'instant) -->
+        <div id="tab-notifications" class="tab-content hidden">Notifications en cours de chargement...</div>
+        <div id="tab-documents" class="tab-content hidden">Documents en cours de chargement...</div>
+        <div id="tab-profil" class="tab-content hidden">Profil en cours de chargement...</div>
+
+        <!-- SURPRISE -->
+        <div id="surprise-content" class="tab-content hidden">
+          <div class="surprise-reveal">
+            <h2>🎉 Surprise ! Ce n'est PAS un portail administratif... ❤️</h2>
+            <p style="max-width: 520px; margin: 0 auto 32px;">
+              C'est juste quelqu'un qui a passé la nuit à créer ce faux site
+              ultra-réaliste pour te faire une déclaration complètement dingue.
+            </p>
+            <p style="font-size: 1.4rem; margin-bottom: 32px; font-weight: 600;">
+              Oceane, accepterais-tu d'être ma Valentine cette année ? 🥺💕
+            </p>
+            <div class="heart-buttons">
+              <button class="heart-btn yes" onclick="sayYes()">OUI ✨</button>
+              <button class="heart-btn" onclick="sayNo()">Non 😔</button>
+            </div>
+            <div id="response" style="margin-top: 28px; font-size: 1.1rem;"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Script de navigation des onglets
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        tab.classList.add('active');
+        document.getElementById(`tab-${tab.dataset.tab}`).classList.remove('hidden');
+      });
+    });
+
+    document.querySelectorAll('.aside-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.aside-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+    // FONCTION SURPRISE (le bouton "Consulter")
+    function revealSurprise() {
+      document.body.classList.add('surprise');
+      document.getElementById('surprise-content').classList.remove('hidden');
+      
+      // Animation douce de transition
+      setTimeout(() => {
+        document.querySelector('.content').scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    }
+
+    function sayYes() {
+      document.getElementById('response').innerHTML = `
+        <div style="color: #ff6b9d; font-size: 1.3rem; font-weight: 700; margin-bottom: 20px;">
+          YEEEEES ! 🎉💖
+        </div>
+        <p style="opacity: 0.95;">
+          Tu viens de rendre quelqu'un extrêmement heureux.<br>
+          Rendez-vous le 14 février pour une soirée rien que pour nous ? 🌙✨
+        </p>
+      `;
+      launchHearts(40);
+    }
+
+    function sayNo() {
+      document.getElementById('response').innerHTML = `
+        <div style="color: #fbbf24; font-size: 1.3rem; font-weight: 700; margin-bottom: 20px;">
+          Aïe... 🥲
+        </div>
+        <p style="opacity: 0.95;">
+          Même si tu dis non, tu resteras toujours quelqu'un de très spécial pour moi. 💔
+        </p>
+      `;
+      launchHearts(15);
+    }
+
+    function launchHearts(count = 25) {
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.innerHTML = '💖';
+          heart.className = 'heart';
+          heart.style.left = Math.random() * 100 + 'vw';
+          heart.style.fontSize = (18 + Math.random() * 20) + 'px';
+          heart.style.animationDuration = (3 + Math.random() * 3) + 's';
+          document.body.appendChild(heart);
+          
+          setTimeout(() => heart.remove(), 5000);
+        }, i * 100);
+      }
+    }
+
+    // Mets ton prénom dans la console si tu veux personnaliser
+    console.log("Site prêt ! Clique sur 'Consulter' pour la surprise 💕");
+  </script>
+</body>
+</html>
